@@ -28,7 +28,7 @@ jobs:
         run: docker login
 
       - name: Build images using Docker Compose
-        run: docker-compose up
+        run: docker compose up
 
       - name: Push images using Docker Compose
-        run: docker-compose push
+        run: docker compose push
