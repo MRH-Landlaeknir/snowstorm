@@ -24,7 +24,6 @@ services:
       - 127.0.0.1:9200:9200
     mem_reservation: 4g
 
-
   snowstorm:
     image: snomedinternational/snowstorm:latest
     container_name: snowstorm
