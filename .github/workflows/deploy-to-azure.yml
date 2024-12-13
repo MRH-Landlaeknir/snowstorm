@@ -30,9 +30,9 @@ jobs:
 
       - name: Tag and Push to ACR
         run: |
-          docker tag snomedinternational/snowstorm:latest ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}.azurecr.io/snowstorm:latest
-          docker tag docker.elastic.co/elasticsearch/elasticsearch:8.11.1 ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}.azurecr.io/elasticsearch:8.11.1
-          docker tag snomedinternational/snomedct-browser:latest ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}.azurecr.io/snomedct-browser:latest
+          docker tag snomedinternational/snowstorm:latest ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/snowstorm:latest
+          docker tag docker.elastic.co/elasticsearch/elasticsearch:8.11.1 ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/elasticsearch:8.11.1
+          docker tag snomedinternational/snomedct-browser:latest ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/snomedct-browser:latest
 
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/snowstorm:latest
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/elasticsearch:8.11.1
