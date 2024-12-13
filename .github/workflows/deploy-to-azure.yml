@@ -40,10 +40,10 @@ jobs:
 
       - name: Tag and Push to GHCR
         run: |
-          docker tag snomedinternational/snowstorm:latest ghcr.io/${{ github.repository_owner.toLower}}/snowstorm:latest
-          docker tag docker.elastic.co/elasticsearch/elasticsearch:8.11.1 ghcr.io/${{ github.repository_owner.toLower }}/elasticsearch:8.11.1
-          docker tag snomedinternational/snomedct-browser:latest ghcr.io/${{ github.repository_owner.toLower }}/snomedct-browser:latest
+          docker tag snomedinternational/snowstorm:latest ghcr.io/mrh-landlaeknir/snowstorm:latest
+          docker tag docker.elastic.co/elasticsearch/elasticsearch:8.11.1 ghcr.io/mrh-landlaeknir/elasticsearch:8.11.1
+          docker tag snomedinternational/snomedct-browser:latest ghcr.io/mrh-landlaeknir/snomedct-browser:latest
 
-          docker push ghcr.io/${{ github.repository_owner }}/snowstorm:latest
-          docker push ghcr.io/${{ github.repository_owner }}/elasticsearch:8.11.1
-          docker push ghcr.io/${{ github.repository_owner }}/snomedct-browser:latest
+          docker push ghcr.io/mrh-landlaeknir/snowstorm:latest
+          docker push ghcr.io/mrh-landlaeknir/elasticsearch:8.11.1
+          docker push ghcr.io/mrh-landlaeknir/snomedct-browser:latest
