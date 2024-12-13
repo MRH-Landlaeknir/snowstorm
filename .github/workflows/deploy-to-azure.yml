@@ -47,3 +47,17 @@ jobs:
           docker push ghcr.io/mrh-landlaeknir/snowstorm:latest
           docker push ghcr.io/mrh-landlaeknir/elasticsearch:8.11.1
           docker push ghcr.io/mrh-landlaeknir/snomedct-browser:latest
+
+        
+    
+      - name: Set Azure Context for Docker
+        run: |
+          docker context create aci snowstorm \
+            --subscription-id ${{ secrets.AZURE_SUBSCRIPTION_ID}} \
+            --resource-group RG-EL-Infrastructure \
+            --location northeurope
+          docker context use snowstorm
+
+      - name: Deploy with Docker Compose to ACI
+        run: |
+          docker compose up -d

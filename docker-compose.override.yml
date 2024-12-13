@@ -1,3 +1,5 @@
+#override image placement for azure registry
+
 
 services:
   elasticsearch:
