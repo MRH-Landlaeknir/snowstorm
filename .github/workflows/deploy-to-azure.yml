@@ -5,16 +5,11 @@ on:
     branches: [ develop ]
 
 jobs:
-  build_and_push:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          install: true
+      - name: Checkout
+        uses: actions/checkout@v2
 
       # Login to azure container registry
       - name: Login to ACR
@@ -24,11 +19,31 @@ jobs:
           username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USER}}
           password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PW }}
 
-      - name: log in to docker
-        run: docker login
+      - name: Docker Login to GHCR
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build images using Docker Compose
-        run: docker compose build
+      - name: Pull Public Images
+        run: |
+          docker pull snomedinternational/snowstorm:latest
+          docker pull docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+          docker pull snomedinternational/snomedct-browser:latest
 
-      - name: Push images using Docker Compose
-        run: docker compose push
+      - name: Tag and Push to ACR
+        run: |
+          docker tag snomedinternational/snowstorm:latest ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}.azurecr.io/snowstorm:latest
+          docker tag docker.elastic.co/elasticsearch/elasticsearch:8.11.1 ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}.azurecr.io/elasticsearch:8.11.1
+          docker tag snomedinternational/snomedct-browser:latest ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}.azurecr.io/snomedct-browser:latest
+
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/snowstorm:latest
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/elasticsearch:8.11.1
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}/snomedct-browser:latest
+
+      - name: Tag and Push to GHCR
+        run: |
+          docker tag snomedinternational/snowstorm:latest ghcr.io/${{ github.repository_owner }}/snowstorm:latest
+          docker tag docker.elastic.co/elasticsearch/elasticsearch:8.11.1 ghcr.io/${{ github.repository_owner }}/elasticsearch:8.11.1
+          docker tag snomedinternational/snomedct-browser:latest ghcr.io/${{ github.repository_owner }}/snomedct-browser:latest
+
+          docker push ghcr.io/${{ github.repository_owner }}/snowstorm:latest
+          docker push ghcr.io/${{ github.repository_owner }}/elasticsearch:8.11.1
+          docker push ghcr.io/${{ github.repository_owner }}/snomedct-browser:latest
