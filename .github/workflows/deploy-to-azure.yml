@@ -77,6 +77,6 @@ jobs:
             az webapp config container set \
               --resource-group $RESOURCE_GROUP \
               --name $WEBAPP_NAME \
-              --docker-registry-server-url https://${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}}
+              --docker-registry-server-url https://${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}} \
               --docker-registry-server-user ${{ secrets.AZURE_CONTAINER_REGISTRY_USER }} \
               --docker-registry-server-password ${{ secrets.AZURE_CONTAINER_REGISTRY_PW }}
