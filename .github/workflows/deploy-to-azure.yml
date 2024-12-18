@@ -73,6 +73,7 @@ jobs:
                 --image directoratehealth.azurecr.io/elasticsearch/elasticsearch:8.11.1 \
                 --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
                 --registry-password ${{secrets.AZURE_CONTAINER_REGISTRY_PW}} \
+                --os-type Linux \
                 --ports 9200 \
                 --cpu 2 \
                 --memory 4 \
@@ -88,6 +89,7 @@ jobs:
                 --image directoratehealth.azurecr.io/snowstorm:latest \
                 --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
                 --registry-password ${{secrets.AZURE_CONTAINER_REGISTRY_PW}} \
+                --os-type Linux \
                 --ports 8080 \
                 --cpu 2 \
                 --memory 4 \
