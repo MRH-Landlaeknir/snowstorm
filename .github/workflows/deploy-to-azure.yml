@@ -77,6 +77,10 @@ jobs:
                 --ports 9200 \
                 --cpu 2 \
                 --memory 4 \
+                --azure-file-volume-account-name elgagnageymsla \
+                --azure-file-volume-account-key ${{secrets.AZURE_STORAGE_KEY}} \
+                --azure-file-volume-share-name elastic-snowstorm-data \
+                --azure-file-volume-mount-path /usr/share/elasticsearch/data \
                 --environment-variables discovery.type=single-node xpack.security.enabled=false
             fi
 
