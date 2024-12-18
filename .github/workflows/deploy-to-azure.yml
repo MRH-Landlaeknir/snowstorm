@@ -60,23 +60,34 @@ jobs:
             # SET variables for az deployments and updates
             RESOURCE_GROUP=RG-EL-Infrastructure
             WEBAPP_NAME=snowstorm
+            WEBAPP_NAME2=elasticsearch
             APP_SERVICE_PLAN=embaettilandlaeknis
 
 
             if az webapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME > /dev/null 2>&1; then
               echo "Web App $WEBAPP_NAME already exists, skipping creation."
             else
-              az webapp create \
-                --resource-group $RESOURCE_GROUP \
-                --plan $APP_SERVICE_PLAN \
-                --name $WEBAPP_NAME \
-                --multicontainer-config-type compose \
-                --multicontainer-config-file docker-compose.override.yml
+              az container create \
+                --resource-group <resource-group-name> \
+                --name elasticsearch \
+                --image directoratehealth.azurecr.io/elasticsearch/elasticsearch:8.11.1 \
+                --ports 9200 \
+                --cpu 2 \
+                --memory 4 \
+                --environment-variables discovery.type=single-node xpack.security.enabled=false
             fi
-          
-            az webapp config container set \
-              --resource-group $RESOURCE_GROUP \
-              --name $WEBAPP_NAME \
-              --docker-registry-server-url https://${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}} \
-              --docker-registry-server-user ${{ secrets.AZURE_CONTAINER_REGISTRY_USER }} \
-              --docker-registry-server-password ${{ secrets.AZURE_CONTAINER_REGISTRY_PW }}
+
+            if az webapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME2 > /dev/null 2>&1; then
+              echo "Web App $WEBAPP_NAME2 already exists, skipping creation."
+            else
+              az container create \
+                --resource-group <resource-group-name> \
+                --name snowstorm \
+                --image directoratehealth.azurecr.io/snowstorm:latest \
+                --ports 8080 \
+                --cpu 2 \
+                --memory 4 \
+                --environment-variables ELASTICSEARCH_URLS=http://elasticsearch:9200
+            fi
+
+            
