@@ -81,7 +81,9 @@ jobs:
                 --azure-file-volume-account-key ${{secrets.AZURE_STORAGE_KEY}} \
                 --azure-file-volume-share-name elastic-snowstorm-data \
                 --azure-file-volume-mount-path /usr/share/elasticsearch/data \
-                --environment-variables discovery.type=single-node xpack.security.enabled=false
+                --command-line "bin/elasticsearch" \
+                --environment-variables DISCOVERY_TYPE=single-node XPACK_SECURITY_ENABLED=false
+
             fi
 
             if az webapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME2 > /dev/null 2>&1; then
