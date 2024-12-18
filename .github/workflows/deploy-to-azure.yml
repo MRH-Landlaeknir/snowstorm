@@ -71,6 +71,7 @@ jobs:
                 --resource-group $RESOURCE_GROUP \
                 --name elasticsearch \
                 --image directoratehealth.azurecr.io/elasticsearch/elasticsearch:8.11.1 \
+                --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
                 --ports 9200 \
                 --cpu 2 \
                 --memory 4 \
@@ -84,6 +85,7 @@ jobs:
                 --resource-group $RESOURCE_GROUP \
                 --name snowstorm \
                 --image directoratehealth.azurecr.io/snowstorm:latest \
+                --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
                 --ports 8080 \
                 --cpu 2 \
                 --memory 4 \
