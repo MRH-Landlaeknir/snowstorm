@@ -68,7 +68,7 @@ jobs:
               echo "Web App $WEBAPP_NAME already exists, skipping creation."
             else
               az container create \
-                --resource-group <resource-group-name> \
+                --resource-group $RESOURCE_GROUP \
                 --name elasticsearch \
                 --image directoratehealth.azurecr.io/elasticsearch/elasticsearch:8.11.1 \
                 --ports 9200 \
@@ -81,7 +81,7 @@ jobs:
               echo "Web App $WEBAPP_NAME2 already exists, skipping creation."
             else
               az container create \
-                --resource-group <resource-group-name> \
+                --resource-group $RESOURCE_GROUP \
                 --name snowstorm \
                 --image directoratehealth.azurecr.io/snowstorm:latest \
                 --ports 8080 \
@@ -90,4 +90,3 @@ jobs:
                 --environment-variables ELASTICSEARCH_URLS=http://elasticsearch:9200
             fi
 
-            
