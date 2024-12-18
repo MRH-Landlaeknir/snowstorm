@@ -11,8 +11,6 @@ services:
       - node.name=snowstorm
       - cluster.name=snowstorm-cluster
       - "ES_JAVA_OPTS=-Xms4g -Xmx4g"
-    volumes:
-      - elastic:/usr/share/elasticsearch/data
     healthcheck:
       test: ["CMD", "curl", "-f", "http://elasticsearch:9200"]
       interval: 1s
@@ -29,12 +27,14 @@ services:
     depends_on:
       elasticsearch:
         condition: service_healthy
+    environment:
+      - ELASTICSEARCH_URLS=http://elasticsearch:9200
     entrypoint: >
         java -Xms2g -Xmx4g
         --add-opens java.base/java.lang=ALL-UNNAMED
         --add-opens java.base/java.util=ALL-UNNAMED
         -cp @/app/jib-classpath-file
-        org.snomed.snowstorm.SnowstormApplicationports:
+        org.snomed.snowstorm.SnowstormApplicationports
     ports:
     - 8080:8080
 
