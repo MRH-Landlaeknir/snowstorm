@@ -63,46 +63,43 @@ jobs:
             WEBAPP_NAME2=elasticsearch
             APP_SERVICE_PLAN=embaettilandlaeknis
 
-
-            if az webapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME > /dev/null 2>&1; then
-              echo "Web App $WEBAPP_NAME already exists, skipping creation."
+            if az containerapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME > /dev/null 2>&1; then
+              echo "Container App $WEBAPP_NAME already exists, skipping creation."
             else
-              az container create \
-                --resource-group $RESOURCE_GROUP \
-                --name elasticsearch \
-                --image directoratehealth.azurecr.io/elasticsearch:8.11.1 \
-                --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
-                --registry-password ${{secrets.AZURE_CONTAINER_REGISTRY_PW}} \
-                --os-type Linux \
-                --vnet EL-Infrastructure-Network \
-                --subnet default \
-                --ports 9200 \
-                --cpu 2 \
-                --memory 4 \
-                --azure-file-volume-account-name elgagnageymsla \
-                --azure-file-volume-account-key ${{secrets.AZURE_STORAGE_KEY}} \
-                --azure-file-volume-share-name elastic-snowstorm-data \
-                --azure-file-volume-mount-path /usr/share/elasticsearch/data \
-                --command-line "bin/elasticsearch" \
-                --environment-variables DISCOVERY_TYPE=single-node XPACK_SECURITY_ENABLED=false
-
+              az containerapp create \
+                  --name elasticsearch \
+                  --resource-group $RESOURCE_GROUP \
+                  --environment EL-infrastructure-environment \
+                  --image directoratehealth.azurecr.io/elasticsearch:8.11.1 \
+                  --cpu 2 \
+                  --memory 4Gi \
+                  --target-port 9200 \
+                  --ingress internal \
+                  --env-vars DISCOVERY_TYPE=single-node XPACK_SECURITY_ENABLED=false \
+                  --registry-server ${{secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}} \
+                  --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
+                  --registry-password ${{secrets.AZURE_CONTAINER_REGISTRY_PW}} \
+                  --volume-mount "/usr/share/elasticsearch/data=azurefile:elastic-snowstorm-data" \
+                  --azure-file-volume-account-name elgagnageymsla \
+                  --azure-file-volume-account-key ${{secrets.AZURE_STORAGE_KEY}} \
+                  --azure-file-volume-share-name elastic-snowstorm-data
             fi
 
-            if az webapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME2 > /dev/null 2>&1; then
-              echo "Web App $WEBAPP_NAME2 already exists, skipping creation."
-            else
-              az container create \
-                --resource-group $RESOURCE_GROUP \
-                --name snowstorm \
-                --image directoratehealth.azurecr.io/snowstorm:latest \
-                --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
-                --registry-password ${{secrets.AZURE_CONTAINER_REGISTRY_PW}} \
-                --os-type Linux \
-                --vnet EL-Infrastructure-Network \
-                --subnet default \
-                --ports 8080 \
-                --cpu 2 \
-                --memory 4 \
-                --environment-variables ELASTICSEARCH_URLS=http://elasticsearch:9200
-            fi
 
+            if az containerapp show --resource-group $RESOURCE_GROUP --name $WEBAPP_NAME2 > /dev/null 2>&1; then
+              echo "Container App $WEBAPP_NAME2 already exists, skipping creation."
+            else
+              az containerapp create \
+                  --name snowstorm \
+                  --resource-group $RESOURCE_GROUP \
+                  --environment EL-infrastructure-environment\
+                  --image directoratehealth.azurecr.io/snowstorm:latest \
+                  --cpu 2 \
+                  --memory 4Gi \
+                  --target-port 8080 \
+                  --ingress external \
+                  --env-vars ELASTICSEARCH_URLS=http://elasticsearch:9200 \
+                  --registry-server ${{secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER}} \
+                  --registry-username ${{secrets.AZURE_CONTAINER_REGISTRY_USER}} \
+                  --registry-password ${{secrets.AZURE_CONTAINER_REGISTRY_PW}}
+            fi
